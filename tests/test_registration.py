@@ -1,37 +1,21 @@
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import expect, Page
 import pytest
+
 
 @pytest.mark.regression
 @pytest.mark.registration
-def test_successful_registration():
-    with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context()
-        page = context.new_page()
-        page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration')
+def test_successful_registration(chromium_page: Page):
+    chromium_page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration')
 
-        email_input = page.get_by_test_id("registration-form-email-input").locator('input')
-        username_input = page.get_by_test_id("registration-form-username-input").locator('input')
-        password_input = page.get_by_test_id("registration-form-password-input").locator('input')
-        registration_button = page.get_by_test_id("registration-page-registration-button")
-        dashboard_label = page.get_by_test_id('dashboard-toolbar-title-text')
+    email_input = chromium_page.get_by_test_id("registration-form-email-input").locator('input')
+    username_input = chromium_page.get_by_test_id("registration-form-username-input").locator('input')
+    password_input = chromium_page.get_by_test_id("registration-form-password-input").locator('input')
+    registration_button = chromium_page.get_by_test_id("registration-page-registration-button")
+    dashboard_label = chromium_page.get_by_test_id('dashboard-toolbar-title-text')
 
-        email_input.fill("user.name@gmail.com")
-        username_input.fill("username")
-        password_input.fill("password")
-        registration_button.click()
+    email_input.fill("user.name@gmail.com")
+    username_input.fill("username")
+    password_input.fill("password")
+    registration_button.click()
 
-        expect(dashboard_label).to_be_visible()
-
-        context.storage_state(path="browser-state.json")
-
-    # Применение
-    with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context(storage_state="browser-state.json")
-        page = context.new_page()
-
-        dashboard_label = page.get_by_test_id('dashboard-toolbar-title-text')
-
-        page.goto("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/dashboard")
-        expect(dashboard_label).to_be_visible()
+    expect(dashboard_label).to_be_visible()
