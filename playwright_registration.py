@@ -1,8 +1,10 @@
 from playwright.sync_api import sync_playwright, expect
 
+#Сохранение
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=False)
-    page = browser.new_page()
+    context = browser.new_context()
+    page = context.new_page()
     page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration')
 
     email_input = page.get_by_test_id("registration-form-email-input").locator('input')
@@ -17,3 +19,18 @@ with sync_playwright() as playwright:
     registration_button.click()
 
     expect(dashboard_label).to_be_visible()
+
+    context.storage_state(path="browser-state.json")
+
+#Применение
+with sync_playwright() as playwright:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context(storage_state="browser-state.json")
+    page = context.new_page()
+
+    dashboard_label = page.get_by_test_id('dashboard-toolbar-title-text')
+
+    page.goto("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/dashboard")
+    expect(dashboard_label).to_be_visible()
+
+    page.wait_for_timeout(timeout=2000)
