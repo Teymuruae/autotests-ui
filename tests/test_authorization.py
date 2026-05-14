@@ -1,6 +1,8 @@
 from playwright.sync_api import expect, Page
 import pytest
 
+from pages.login_page import LoginPage
+
 
 @pytest.mark.regression
 @pytest.mark.authorization
@@ -9,17 +11,8 @@ import pytest
     ("user.name@gmail.com", "  "),
     ("  ", "password"),
 ])
-def test_wrong_email_or_password_authorization(chromium_page: Page, email: str, password: str):
-    chromium_page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/login')
-
-    email_field = chromium_page.locator('//div[@data-testid="login-form-email-input"]//input')
-    password_field = chromium_page.get_by_test_id('login-form-password-input').locator('input')
-    login_button = chromium_page.locator('//button[@id = "login-page-login-button"]')
-    alert = chromium_page.locator("//div[contains(@class, 'MuiAlert-message')]")
-
-    email_field.fill(email)
-    password_field.fill(password)
-    login_button.click()
-
-    expect(alert).to_be_visible()
-    expect(alert).to_have_text('Wrong email or password')
+def test_wrong_email_or_password_authorization(login_page: LoginPage, email: str, password: str):
+    login_page.visit('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/login')
+    login_page.fill_login_form(email, password)
+    login_page.click_login_button()
+    login_page.check_visible_wrong_email_or_password_alert()
