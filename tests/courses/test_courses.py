@@ -50,3 +50,52 @@ class TestCourses:
             max_score="100",
             min_score="10"
         )
+
+    def test_edit_course(self, create_course_page: CreateCoursePage, courses_list_page: CoursesListPage):
+        title = "Cat veterinary"
+        estimated_time = '4h 20m'
+        max_score = '10'
+        min_score = '2'
+
+        new_title = "Python"
+        new_estimated_time = '1h 15m'
+        new_max_score = '55'
+        new_min_score = '14'
+
+        create_course_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses/create")
+        create_course_page.create_course_form.fill(
+            title=title,
+            estimated_time=estimated_time,
+            description="Some course description",
+            max_score=max_score,
+            min_score=min_score
+        )
+        create_course_page.image_upload_widget.upload_preview_image('./testdata/files/cat.jpg')
+        create_course_page.toolbar_view.click_create_course_button()
+
+        courses_list_page.course_view.check_visible(
+            index=0,
+            title=title,
+            estimated_time=estimated_time,
+            max_score=max_score,
+            min_score=min_score
+        )
+
+        courses_list_page.course_view.menu.click_edit(0)
+
+        create_course_page.create_course_form.fill(
+            title=new_title,
+            estimated_time=new_estimated_time,
+            description="Descr for python",
+            max_score=new_max_score,
+            min_score=new_min_score
+        )
+        create_course_page.toolbar_view.click_create_course_button()
+
+        courses_list_page.course_view.check_visible(
+            index=0,
+            title=new_title,
+            estimated_time=new_estimated_time,
+            max_score=new_max_score,
+            min_score=new_min_score
+        )
