@@ -31,6 +31,7 @@ class TestAuthorization:
             ("  ", "password")
         ]
     )
+    @pytest.mark.xdist_group(name="authorization-group")  # Добавили xdist группу
     @allure.title("User login with wrong email or password")
     @allure.tag(AllureTag.USER_LOGIN)
     @allure.severity(Severity.CRITICAL)
