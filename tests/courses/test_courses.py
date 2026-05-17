@@ -8,6 +8,8 @@ from tools.allure.epiics import AllureEpic
 from tools.allure.features import AllureFeature
 from tools.allure.stories import AllureStory
 from tools.allure.tags import AllureTag
+from tools.routes import AppRoute
+from config import settings
 
 
 @pytest.mark.courses
@@ -24,8 +26,8 @@ class TestCourses:
     @allure.title("Check displaying of empty courses list")
     @allure.severity(Severity.NORMAL)
     def test_empty_courses_list(self, courses_list_page: CoursesListPage):
-        courses_list_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses")
-        courses_list_page.navbar.check_visible("username")
+        courses_list_page.visit(AppRoute.COURSES_LIST)
+        courses_list_page.navbar.check_visible(settings.test_user.username)
         courses_list_page.sidebar.check_visible()
         courses_list_page.toolbar_view.check_visible()
         courses_list_page.check_visible_empty_view()
@@ -33,7 +35,7 @@ class TestCourses:
     @allure.title("Create course")
     @allure.severity(Severity.CRITICAL)
     def test_create_course(self, create_course_page: CreateCoursePage, courses_list_page: CoursesListPage):
-        create_course_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses/create")
+        create_course_page.visit(AppRoute.COURSES_CREATE)
 
         create_course_page.toolbar_view.check_visible()
         create_course_page.image_upload_widget.check_visible(is_image_uploaded=False)
@@ -47,7 +49,7 @@ class TestCourses:
         create_course_page.exercises_toolbar_view.check_visible()
         create_course_page.check_visible_exercises_empty_view()
 
-        create_course_page.image_upload_widget.upload_preview_image('./testdata/files/cat.jpg')
+        create_course_page.image_upload_widget.upload_preview_image(settings.test_data.image_png_file)
         create_course_page.image_upload_widget.check_visible(is_image_uploaded=True)
 
         create_course_page.create_course_form.fill(
@@ -81,7 +83,7 @@ class TestCourses:
         new_max_score = '55'
         new_min_score = '14'
 
-        create_course_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses/create")
+        create_course_page.visit(AppRoute.COURSES_CREATE)
         create_course_page.create_course_form.fill(
             title=title,
             estimated_time=estimated_time,
@@ -89,7 +91,7 @@ class TestCourses:
             max_score=max_score,
             min_score=min_score
         )
-        create_course_page.image_upload_widget.upload_preview_image('./testdata/files/cat.jpg')
+        create_course_page.image_upload_widget.upload_preview_image(settings.test_data.image_png_file)
         create_course_page.toolbar_view.click_create_course_button()
 
         courses_list_page.course_view.check_visible(
