@@ -12,10 +12,10 @@ class BasePage:
         self.page = page
 
     def visit(self, url: str):
-        step = url, wait_until = 'networkidle'
-        with allure.step(f'Opening the url "{url}"'):
+        step = f'Opening the url "{url}"'
+        with allure.step(step):
             logger.info(step)
-            self.page.goto(step)
+            self.page.goto(url, wait_until = 'networkidle')
 
     def reload(self):
         step = f'Reloading page with url "{self.page.url}"'
